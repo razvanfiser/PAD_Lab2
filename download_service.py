@@ -7,6 +7,12 @@ import book_req
 app = Flask(__name__)
 SEARCH_PORT = 5000
 
+def check_log_in(header):
+  r = requests.get("http://localhost:5002/check_user_logged_in", headers=header)
+  r = r.json()
+  if not r["logged_in"]:
+    return jsonify({"error": "You must be logged in to upload a file."}), 400
+  return True
 
 @app.route("/", methods=['GET'])
 def index():
@@ -24,6 +30,11 @@ def download_by_id(item_id):
 
 @app.route("/upload", methods=['POST'])
 def upload_book():
+  cookie = request.headers["Cookie"]
+  header = {"Cookie": cookie}
+  if check_log_in(header) != True:
+    return check_log_in(header)
+
   if "pdf-file" not in request.files:
     return jsonify({"error": "No 'pdf-file' key"}), 400
   file = request.files["pdf-file"]
@@ -43,12 +54,13 @@ def upload_book():
     return jsonify({"error": "Invalid file format. Please upload a PDF file."}), 400
 
   headers = request.headers
-  print(headers)
+  # print(headers)
   if not all([item in headers for item in ["Title", "Author-First-Name", "Author-Surname", "Year", "Genre"]]):
     return jsonify({"error": "All headers must be included"}), 400
 
 
   author_id = book_req.insert_author(headers["Author-First-Name"], headers["Author-Surname"])
+  book_req.insert_book(headers["Title"], headers["Genre"], headers["Year"], author_id, f"pdfs/{file.filename}")
   file.save(os.path.join("pdfs", file.filename))
   return "File successfully uploaded and saved.", 201
 

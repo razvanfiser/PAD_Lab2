@@ -211,5 +211,37 @@ def insert_book(title, genre, year, author_id, file_path):
         if conn is not None:
             conn.close()
 
-print(insert_book("Totaler Negger Tod", "Politics", 1940, 3, "kek"))
+def delete_book(id):
+    # authors = get_authors()
+    # print(authors)
+    conn = None
+    if not isinstance(id, (list, tuple)):
+        id = f"({id})"
+    else:
+        id = tuple(id)
+    try:
+        insert_book = f'''
+        DELETE FROM books
+        WHERE book_id in {id};
+        
+        TRUNCATE books RESTART IDENTITY;
+        '''
+        params = config()
+        # connect to the PostgreSQL server
+        conn = psycopg2.connect(**params)
+        cur = conn.cursor()
+
+        cur.execute(insert_book)
+        # close communication with the PostgreSQL database server
+        cur.close()
+        # commit the changes
+        conn.commit()
+    except (Exception, psycopg2.DatabaseError) as error:
+        return error
+    finally:
+        if conn is not None:
+            conn.close()
+
+# print(delete_book(1))
+# print(insert_book("Totaler Negger Tod", "Politics", 1940, 3, "kek"))
 print(get_books())
