@@ -34,14 +34,14 @@ def get_all_books():
   data = book_req.get_books()
   if not data:
     return jsonify({"error": "Not Found"}), 404
-  return jsonify(data)
+  return jsonify(data), 200
 
 @app.route("/authors", methods=['GET'])
 def get_all_authors():
   data = book_req.get_authors()
   if not data:
     return jsonify({"error": "Not Found"}), 404
-  return jsonify(data)
+  return jsonify(data), 200
 
 @app.route("/books/id/<int:item_id>", methods=['GET'])
 def get_by_id(item_id):

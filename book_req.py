@@ -244,4 +244,4 @@ def delete_book(id):
 
 # print(delete_book(1))
 # print(insert_book("Totaler Negger Tod", "Politics", 1940, 3, "kek"))
-print(get_books())
+# print(get_books())
