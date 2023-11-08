@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "8b3582dd-d35d-4568-b1a6-6e6d0a55625b",
+		"name": "Gateway",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27577776"
+	},
+	"item": [
+		{
+			"name": "Index",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Books",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Authors",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get Book by Id",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Search by Title/Author",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Download Book by ID",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Upload Book",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "title",
+						"value": "The Goyim Know",
+						"type": "text"
+					},
+					{
+						"key": "author_first_name",
+						"value": "Razvan",
+						"type": "text"
+					},
+					{
+						"key": "author_surname",
+						"value": "Fischer",
+						"type": "text"
+					},
+					{
+						"key": "year",
+						"value": "2023",
+						"type": "text"
+					},
+					{
+						"key": "genre",
+						"value": "Politics",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "pdf-file",
+							"type": "file",
+							"src": "/C:/Users/razva/Downloads/09073089.pdf",
+							"disabled": true
+						},
+						{
+							"key": "username",
+							"value": "user1",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "password1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:5001/upload",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log In",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

@@ -32,10 +32,13 @@ def download_by_id(item_id):
 def upload_book():
   cookie = request.headers["Cookie"]
   header = {"Cookie": cookie}
+  print(header)
   if check_log_in(header) != True:
     return check_log_in(header)
+  # print("HEADERS: ", request.headers)
 
   if "pdf-file" not in request.files:
+    print([item for item in request.files])
     return jsonify({"error": "No 'pdf-file' key"}), 400
   file = request.files["pdf-file"]
   if not file.filename:

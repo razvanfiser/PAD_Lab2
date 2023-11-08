@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # Set the secret key for session management
 app.secret_key = "your_secret_key"
-app.permanent_session_lifetime = timedelta(seconds=60)
+app.permanent_session_lifetime = timedelta(seconds=30)
 
 # users = {
 #     'user1': {'username': 'user1', 'password': 'password1'},
@@ -33,6 +33,7 @@ def home():
 
 @app.route('/login', methods=['POST'])
 def login():
+    print(request.headers)
     username = request.form['username']
     password = request.form['password']
     user = get_user_by_name(username)
