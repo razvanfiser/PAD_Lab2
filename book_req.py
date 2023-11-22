@@ -186,7 +186,7 @@ def insert_author(first_name, last_name):
 
     return id[0][0]
 
-def insert_book(title, genre, year, author_id, file_path):
+def insert_book(title, genre, year, author_id, file_path, connection):
     # authors = get_authors()
     # print(authors)
     conn = None
@@ -195,21 +195,23 @@ def insert_book(title, genre, year, author_id, file_path):
         INSERT INTO books (book_title, book_year, book_genre, author_id, file_path)
         VALUES ('{title}', {year}, '{genre}', {author_id}, '{file_path}')
         '''
-        params = config()
+        # params = config()
         # connect to the PostgreSQL server
-        conn = psycopg2.connect(**params)
+        # conn = psycopg2.connect(**params)
+        conn = connection
         cur = conn.cursor()
 
         cur.execute(insert_book)
         # close communication with the PostgreSQL database server
         cur.close()
         # commit the changes
-        conn.commit()
+        # conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         return error
-    finally:
-        if conn is not None:
-            conn.close()
+    # finally:
+    #     if conn is not None:
+    #         conn.close()
+    return True
 
 def delete_book(id):
     # authors = get_authors()
@@ -244,4 +246,4 @@ def delete_book(id):
 
 # print(delete_book(1))
 # print(insert_book("Totaler Negger Tod", "Politics", 1940, 3, "kek"))
-# print(get_books())
+print(get_books())

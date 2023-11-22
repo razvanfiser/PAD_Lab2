@@ -4,6 +4,10 @@ import os
 from pypdf.errors import PdfReadError
 from pypdf import PdfReader
 import book_req
+import psycopg2
+
+import user_req
+from config import config
 app = Flask(__name__)
 SEARCH_PORT = 5000
 
@@ -12,7 +16,7 @@ def check_log_in(header):
   r = r.json()
   if not r["logged_in"]:
     return jsonify({"error": "You must be logged in to upload a file."}), 400
-  return True
+  return True, r["username"]
 
 @app.route("/", methods=['GET'])
 def index():
@@ -32,10 +36,22 @@ def download_by_id(item_id):
 def upload_book():
   cookie = request.headers["Cookie"]
   header = {"Cookie": cookie}
+  username = ""
   print(header)
-  if check_log_in(header) != True:
+  if check_log_in(header)[0] != True:
     return check_log_in(header)
-  # print("HEADERS: ", request.headers)
+  else:
+    username = check_log_in(header)[1]
+
+  params_users = config(section="authdb")
+  conn_users = psycopg2.connect(**params_users)
+  params_book = config()
+  conn_book = psycopg2.connect(**params_book)
+  users_xid = conn_users.xid(42, 'transaction_ID_users', 'branch_qualifier_users')
+  book_xid = conn_users.xid(42, 'transaction_ID_book', 'branch_qualifier_book')
+
+  conn_users.tpc_begin(users_xid)
+  conn_book.tpc_begin(book_xid)
 
   if "pdf-file" not in request.files:
     print([item for item in request.files])
@@ -63,7 +79,23 @@ def upload_book():
 
 
   author_id = book_req.insert_author(headers["Author-First-Name"], headers["Author-Surname"])
-  book_req.insert_book(headers["Title"], headers["Genre"], headers["Year"], author_id, f"pdfs/{file.filename}")
+
+  book_inserted = book_req.insert_book(headers["Title"], headers["Genre"], headers["Year"], author_id, f"pdfs/{file.filename}", connection=conn_book)
+  user_updated = user_req.update_upload_cnt(username, conn_users)
+  conn_users.tpc_prepare()
+  conn_book.tpc_prepare()
+  print(book_inserted, user_updated)
+  if (book_inserted == True) and (user_updated == True):
+    print("KEK")
+    conn_users.tpc_commit()
+    conn_book.tpc_commit()
+  else:
+    conn_users.tpc_rollback()
+    conn_book.tpc_rollback()
+
+  conn_users.close()
+  conn_book.close()
+
   file.save(os.path.join("pdfs", file.filename))
   return "File successfully uploaded and saved.", 201
 

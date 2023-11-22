@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # Set the secret key for session management
 app.secret_key = "your_secret_key"
-app.permanent_session_lifetime = timedelta(seconds=30)
+app.permanent_session_lifetime = timedelta(seconds=600)
 
 # users = {
 #     'user1': {'username': 'user1', 'password': 'password1'},
@@ -37,9 +37,10 @@ def login():
     username = request.form['username']
     password = request.form['password']
     user = get_user_by_name(username)
+    print(user)
     if isinstance(user, IndexError):
         return jsonify({"error": 'Invalid credentials'}), 400
-    if username in user and user[-1] == password:
+    if username in user and user[-2] == password:
         user = User(username)
         login_user(user)
         session['username'] = username
