@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 import book_req
+import time
 app = Flask(__name__)
 
 @app.route("/", methods=['GET'])
@@ -32,6 +33,7 @@ def search_by():
 @app.route("/books", methods=['GET'])
 def get_all_books():
   data = book_req.get_books()
+  # time.sleep(10)
   if not data:
     return jsonify({"error": "Not Found"}), 404
   return jsonify(data), 200
@@ -39,6 +41,7 @@ def get_all_books():
 @app.route("/authors", methods=['GET'])
 def get_all_authors():
   data = book_req.get_authors()
+  # time.sleep(10)
   if not data:
     return jsonify({"error": "Not Found"}), 404
   return jsonify(data), 200

@@ -16,6 +16,7 @@ spec:
         - name: gateway
           image: razvanfiser1488/gateway:latest
           imagePullPolicy: Always
+          env:
             - name: TIMEOUT
               value: "1"
           ports:
